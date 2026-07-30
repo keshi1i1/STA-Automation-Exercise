@@ -15,10 +15,17 @@ import org.testng.annotations.Test;
 
 import base.BaseTest;
 import pageEvents.accountCreatedPageEvents;
+import pageEvents.cartPageEvents;
 import pageEvents.deleteAccountPageEvents;
 import pageEvents.homePageEvents;
 import pageEvents.signupLoginPageEvents;
 import pageEvents.signupPageEvents;
+import pageEvents.productsPageEvents;
+import pageEvents.productDetailPageEvents;
+import pageEvents.checkoutPageEvents;
+import pageEvents.paymentPageEvents;
+import pageEvents.categoryPageEvents;
+
 
 public class AutomationExerciseTestCases extends BaseTest {
     String browser;
@@ -31,6 +38,12 @@ public class AutomationExerciseTestCases extends BaseTest {
     signupPageEvents signupPage = new signupPageEvents();
     accountCreatedPageEvents accountCreatedPage = new accountCreatedPageEvents();
     deleteAccountPageEvents deleteAccountPage = new deleteAccountPageEvents();
+    cartPageEvents cartPage = new cartPageEvents();
+    productsPageEvents productsPage = new productsPageEvents();
+    productDetailPageEvents productDetailPage = new productDetailPageEvents();
+    checkoutPageEvents checkoutPage = new checkoutPageEvents();
+    paymentPageEvents paymentPage = new paymentPageEvents();
+    categoryPageEvents categoryPage = new categoryPageEvents();
 
     @BeforeTest(alwaysRun = true)
     @Parameters({"browser"})
@@ -76,6 +89,257 @@ public class AutomationExerciseTestCases extends BaseTest {
         homePage.clickDeleteAccountTab();
         deleteAccountPage.verifyAccountDeletedHeader();
         deleteAccountPage.clickContinueButton();
+    }
+
+    @Test(priority = 11)
+    public void tc_11_verifySubscriptionInCartPage() {
+        homePage.verifyHomePage();
+        cartPage.scrollToFooter();
+        cartPage.verifySubscriptionText();
+        cartPage.enterSubscriptionEmail("autotest" + generate4Digit() + "@example.com");
+        cartPage.clickSubscribeArrowButton();
+        cartPage.verifySubscriptionSuccessMessage();
+    }
+
+    @Test(priority = 12)
+    public void tc_12_addProductsInCart() {
+        homePage.verifyHomePage();
+        homePage.clickProductsTab();
+        productsPage.verifyAllProductsHeader();
+        productsPage.hoverAndAddProductToCart(1);
+        productsPage.clickContinueShoppingButton();
+        productsPage.hoverAndAddProductToCart(2);
+        productsPage.clickViewCartButton();
+        cartPage.verifyProductInCart(1, "Blue Top");
+        cartPage.verifyProductInCart(2, "Men Tshirt");
+        cartPage.verifyPriceQuantityAndTotal(1);
+        cartPage.verifyPriceQuantityAndTotal(2);
+    }
+
+    @Test(priority = 13)
+    public void tc_13_verifyProductQuantityInCart() {
+        homePage.verifyHomePage();
+        homePage.clickViewProduct(1);
+
+        productDetailPage.verifyProductDetailIsVisible();
+        productDetailPage.setProductQuantity(4);
+        productDetailPage.clickAddToCartButton();
+        productDetailPage.clickViewCartButton();
+
+        cartPage.verifyProductQuantityInCart(1, 4);
+    }
+
+    @Test(priority = 14)
+    public void tc_14_placeOrderRegisterWhileCheckout() {
+        registerDetails = new Hashtable<>();
+        registerDetails.put("name", "AutoTest" + generate4Digit());
+        registerDetails.put("email", registerDetails.get("name").toLowerCase() + "@example.com");
+        registerDetails.put("password", "Password" + generate4Digit());
+        registerDetails.put("day", "6");
+        registerDetails.put("month", "January");
+        registerDetails.put("year", "2005");
+        registerDetails.put("firstName", "AutoTest");
+        registerDetails.put("lastName", registerDetails.get("name").replaceAll("[^0-9]", ""));
+        registerDetails.put("company", "Example Inc.");
+        registerDetails.put("address1", "123 Main St");
+        registerDetails.put("address2", "Apt 4B");
+        registerDetails.put("country", "United States");
+        registerDetails.put("state", "New York");
+        registerDetails.put("city", "New York");
+        registerDetails.put("zipcode", "10001");
+        registerDetails.put("mobileNumber", "+1 (555) 019-9941");
+
+        homePage.verifyHomePage();
+        homePage.clickViewProduct(1); // reuse hover, or swap for a home-page add-to-cart if you prefer
+        productDetailPage.verifyProductDetailIsVisible();
+        productDetailPage.clickAddToCartButton();
+        productDetailPage.clickViewCartButton();
+
+        cartPage.verifyCartPageIsDisplayed();
+
+        cartPage.clickProceedToCheckout();
+        cartPage.clickRegisterLoginLink();
+
+        signupLoginPage.verifyNewUserSignupHeader();
+        signupLoginPage.registerNewUser(registerDetails);
+        signupPage.verifyEnterAccountInformationHeader();
+        signupPage.registerUserInformation(registerDetails);
+
+        accountCreatedPage.verifyAccountCreatedHeader();
+        accountCreatedPage.clickContinueButton();
+
+        homePage.verifyLoggedInAs(registerDetails.get("name"));
+
+        homePage.clickCartTab();
+        cartPage.verifyCartPageIsDisplayed();
+        cartPage.clickProceedToCheckout();
+
+        checkoutPage.verifyAddressDetailsIsVisible();
+        checkoutPage.verifyReviewOrderIsVisible();
+
+        checkoutPage.enterOrderComment("Please deliver in the morning if possible.");
+        checkoutPage.clickPlaceOrderButton();
+
+        paymentPage.enterPaymentDetails("AutoTest Tester", "4111111111111111", "123", "12", "2028");
+        paymentPage.clickPayAndConfirmOrderButton();
+
+        paymentPage.verifyOrderPlacedSuccessMessage();
+
+        homePage.clickDeleteAccountTab();
+        deleteAccountPage.verifyAccountDeletedHeader();
+        deleteAccountPage.clickContinueButton();
+    }
+
+    @Test(priority = 15)
+    public void tc_15_placeOrderRegisterBeforeCheckout() {
+        registerDetails = new Hashtable<>();
+        registerDetails.put("name", "AutoTest" + generate4Digit());
+        registerDetails.put("email", registerDetails.get("name").toLowerCase() + "@example.com");
+        registerDetails.put("password", "Password" + generate4Digit());
+        registerDetails.put("day", "6");
+        registerDetails.put("month", "January");
+        registerDetails.put("year", "2005");
+        registerDetails.put("firstName", "AutoTest");
+        registerDetails.put("lastName", registerDetails.get("name").replaceAll("[^0-9]", ""));
+        registerDetails.put("company", "Example Inc.");
+        registerDetails.put("address1", "123 Main St");
+        registerDetails.put("address2", "Apt 4B");
+        registerDetails.put("country", "United States");
+        registerDetails.put("state", "New York");
+        registerDetails.put("city", "New York");
+        registerDetails.put("zipcode", "10001");
+        registerDetails.put("mobileNumber", "+1 (555) 019-9941");
+
+        homePage.verifyHomePage();
+
+        homePage.clickSignupLoginTab();
+        signupLoginPage.verifyNewUserSignupHeader();
+        signupLoginPage.registerNewUser(registerDetails);
+        signupPage.verifyEnterAccountInformationHeader();
+        signupPage.registerUserInformation(registerDetails);
+
+        accountCreatedPage.verifyAccountCreatedHeader();
+        accountCreatedPage.clickContinueButton();
+
+        homePage.verifyLoggedInAs(registerDetails.get("name"));
+
+        homePage.clickViewProduct(1);
+        productDetailPage.verifyProductDetailIsVisible();
+        productDetailPage.clickAddToCartButton();
+        productDetailPage.clickViewCartButton();
+
+        cartPage.verifyCartPageIsDisplayed();
+
+        cartPage.clickProceedToCheckout();
+
+        checkoutPage.verifyAddressDetailsIsVisible();
+        checkoutPage.verifyReviewOrderIsVisible();
+
+        checkoutPage.enterOrderComment("Please deliver in the morning if possible.");
+        checkoutPage.clickPlaceOrderButton();
+
+        paymentPage.enterPaymentDetails("AutoTest Tester", "4111111111111111", "123", "12", "2028");
+        paymentPage.clickPayAndConfirmOrderButton();
+
+        paymentPage.verifyOrderPlacedSuccessMessage();
+
+        homePage.clickDeleteAccountTab();
+        deleteAccountPage.verifyAccountDeletedHeader();
+        deleteAccountPage.clickContinueButton();
+    }
+
+    @Test(priority = 16)
+    public void tc_16_placeOrderLoginBeforeCheckout() {
+        registerDetails = new Hashtable<>();
+        registerDetails.put("name", "AutoTest" + generate4Digit());
+        registerDetails.put("email", registerDetails.get("name").toLowerCase() + "@example.com");
+        registerDetails.put("password", "Password" + generate4Digit());
+        registerDetails.put("day", "6");
+        registerDetails.put("month", "January");
+        registerDetails.put("year", "2005");
+        registerDetails.put("firstName", "AutoTest");
+        registerDetails.put("lastName", registerDetails.get("name").replaceAll("[^0-9]", ""));
+        registerDetails.put("company", "Example Inc.");
+        registerDetails.put("address1", "123 Main St");
+        registerDetails.put("address2", "Apt 4B");
+        registerDetails.put("country", "United States");
+        registerDetails.put("state", "New York");
+        registerDetails.put("city", "New York");
+        registerDetails.put("zipcode", "10001");
+        registerDetails.put("mobileNumber", "+1 (555) 019-9941");
+
+        homePage.verifyHomePage();
+        homePage.clickSignupLoginTab();
+        signupLoginPage.verifyNewUserSignupHeader();
+        signupLoginPage.registerNewUser(registerDetails);
+        signupPage.verifyEnterAccountInformationHeader();
+        signupPage.registerUserInformation(registerDetails);
+        accountCreatedPage.verifyAccountCreatedHeader();
+        accountCreatedPage.clickContinueButton();
+        homePage.clickLogoutTab();
+
+        homePage.verifyHomePage();
+
+        homePage.clickSignupLoginTab();
+        signupLoginPage.loginUser(registerDetails.get("email").toString(), registerDetails.get("password").toString());
+
+        homePage.verifyLoggedInAs(registerDetails.get("name"));
+
+        homePage.clickViewProduct(1);
+        productDetailPage.verifyProductDetailIsVisible();
+        productDetailPage.clickAddToCartButton();
+        productDetailPage.clickViewCartButton();
+
+        cartPage.verifyCartPageIsDisplayed();
+
+        cartPage.clickProceedToCheckout();
+
+        checkoutPage.verifyAddressDetailsIsVisible();
+        checkoutPage.verifyReviewOrderIsVisible();
+
+        checkoutPage.enterOrderComment("Please deliver in the morning if possible.");
+        checkoutPage.clickPlaceOrderButton();
+
+        paymentPage.enterPaymentDetails("AutoTest Tester", "4111111111111111", "123", "12", "2028");
+        paymentPage.clickPayAndConfirmOrderButton();
+
+        paymentPage.verifyOrderPlacedSuccessMessage();
+
+        homePage.clickDeleteAccountTab();
+        deleteAccountPage.verifyAccountDeletedHeader();
+        deleteAccountPage.clickContinueButton();
+    }
+
+    @Test(priority = 17)
+    public void tc_17_removeProductsFromCart() {
+        homePage.verifyHomePage();
+
+        homePage.clickViewProduct(1);
+        productDetailPage.verifyProductDetailIsVisible();
+        productDetailPage.clickAddToCartButton();
+        productDetailPage.clickViewCartButton();
+
+        cartPage.verifyCartPageIsDisplayed();
+
+        cartPage.removeProductFromCart(1);
+
+        cartPage.verifyProductRemovedFromCart(1);
+    }
+
+    @Test(priority = 18)
+    public void tc_18_viewCategoryProducts() {
+        homePage.verifyHomePage();
+        homePage.verifyCategorySidebarIsVisible();
+
+        homePage.clickCategory("Women");
+        homePage.clickSubCategory("Women", "Tops");
+
+        categoryPage.verifyCategoryPageTitle("WOMEN - TOPS PRODUCTS");
+
+        homePage.clickCategory("Men");
+        homePage.clickSubCategory("Men", "Tshirts");
+
+        categoryPage.verifyCategoryPageTitle("MEN - TSHIRTS PRODUCTS");
     }
 
     @AfterMethod(alwaysRun = true)

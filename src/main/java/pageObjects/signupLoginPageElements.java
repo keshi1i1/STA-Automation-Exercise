@@ -9,4 +9,9 @@ public interface signupLoginPageElements {
     String txtSignupName = "//input[@placeholder='Name']";
     String txtSignupEmail = "//input[@data-qa='signup-email']";
     String btnSignup = "//button[normalize-space()='Signup']";
+
+    // Login Form
+    String txtLoginEmail = "//input[@data-qa='login-email']";
+    String txtLoginPassword = "//input[@data-qa='login-password']";
+    String btnLogin = "//button[normalize-space()='Login']";
 }

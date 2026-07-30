@@ -28,4 +28,15 @@ public class signupLoginPageEvents extends BaseTest {
         logger.info("Click 'Signup' button");
         click(signupLoginPageElements.btnSignup);
     }
+
+    public void loginUser(String email, String password) {
+        logger.info("Enter email '" + email + "' and password, then click 'Login' button");
+        clear(signupLoginPageElements.txtLoginEmail);
+        sendKeys(signupLoginPageElements.txtLoginEmail, email);
+
+        clear(signupLoginPageElements.txtLoginPassword);
+        sendKeys(signupLoginPageElements.txtLoginPassword, password);
+
+        click(signupLoginPageElements.btnLogin);
+    }
 }

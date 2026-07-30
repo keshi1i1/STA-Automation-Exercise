@@ -27,6 +27,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.interactions.Actions;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.Parameters;
@@ -270,6 +271,21 @@ public class BaseTest {
         // Generate a random number between 1000 and 9999
         int intRandom = rand.nextInt(9000) + 1000;
         return intRandom;
+    }
+
+    public void hoverOverElement(String webElement) {
+    WebElement element = ele.getXPATHWebElement(webElement);
+    Actions actions = new Actions(driver);
+    actions.moveToElement(element).perform();
+    }
+
+    public String getText(String webElement) {
+        return ele.getXPATHWebElement(webElement).getText();
+    }
+
+    public void scrollToFooter() {
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("window.scrollTo(0, document.body.scrollHeight);");
     }
 
     public void assertElementIsDisplayed(String webElement) {

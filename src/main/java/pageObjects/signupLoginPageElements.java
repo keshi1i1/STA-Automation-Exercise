@@ -4,6 +4,9 @@ public interface signupLoginPageElements {
     
     // Header 
     String hdrNewUserSignup = "//h2[normalize-space()='New User Signup!']";
+    String hdrLoginToYourAccount = "//h2[normalize-space()='Login to your account']";
+    String hdrInvalidEmailOrPassword = "//p[normalize-space()='Your email or password is incorrect!']";
+    String hdrEmailAlreadyExists = "//p[normalize-space()='Email Address already exist!']";
 
     // Signup Form
     String txtSignupName = "//input[@placeholder='Name']";

@@ -5,6 +5,7 @@ import java.time.Duration;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 
 import base.BaseTest;
 import pageObjects.productDetailPageElements;
@@ -14,6 +15,11 @@ public class productDetailPageEvents extends BaseTest {
     public void verifyProductDetailIsVisible() {
         logger.info("Verify product detail page is opened");
         assertElementIsDisplayed(productDetailPageElements.txtProductInformation);
+    }
+
+    public void verifyProductDetailPage() {
+        logger.info("User is landed to product detail page");
+        assertPageIsDisplayed("product_details");
     }
 
     public void setProductQuantity(int quantity) {
@@ -55,5 +61,15 @@ public class productDetailPageEvents extends BaseTest {
     public void verifyReviewSuccessMessage() {
         logger.info("Verify review success message is visible");
         assertElementIsDisplayed(productDetailPageElements.txtReviewSuccessMessage);
+    }
+
+    public void verifyProductDetails() {
+        logger.info("Verify that product detail is visible: product name, category, price, availability, condition, brand");
+        assertElementIsDisplayed(productDetailPageElements.hdrProductName);
+        assertElementIsDisplayed(productDetailPageElements.hdrCategory);
+        assertElementIsDisplayed(productDetailPageElements.hdrPrice);
+        assertElementIsDisplayed(productDetailPageElements.hdrAvailability);
+        assertElementIsDisplayed(productDetailPageElements.hdrCondition);
+        assertElementIsDisplayed(productDetailPageElements.hdrBrand);
     }
 }

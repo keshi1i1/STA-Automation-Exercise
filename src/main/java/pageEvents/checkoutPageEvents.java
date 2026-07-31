@@ -17,6 +17,7 @@ public class checkoutPageEvents extends BaseTest {
 
     public void enterOrderComment(String comment) {
         logger.info("Enter description '" + comment + "' in comment text area");
+        clear(checkoutPageElements.inputOrderComment);
         sendKeys(checkoutPageElements.inputOrderComment, comment);
     }
 

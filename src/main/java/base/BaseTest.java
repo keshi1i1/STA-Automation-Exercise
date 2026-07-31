@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Date;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
@@ -19,6 +20,7 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -28,6 +30,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.interactions.Actions;
+import org.testng.Assert;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.Parameters;
@@ -274,9 +277,9 @@ public class BaseTest {
     }
 
     public void hoverOverElement(String webElement) {
-    WebElement element = ele.getXPATHWebElement(webElement);
-    Actions actions = new Actions(driver);
-    actions.moveToElement(element).perform();
+        WebElement element = ele.getXPATHWebElement(webElement);
+        Actions actions = new Actions(driver);
+        actions.moveToElement(element).perform();
     }
 
     public String getText(String webElement) {
@@ -305,7 +308,7 @@ public class BaseTest {
             assertTrue(element.isDisplayed(), "The element is not displayed.");
         } catch (NoSuchElementException e) {
             throw new AssertionError("Element not found: " + webElement, e);
-        } catch (org.openqa.selenium.TimeoutException e) {
+        } catch (TimeoutException e) {
             throw new AssertionError("Element was not visible within the timeout: " + webElement, e);
         }
     }
@@ -319,7 +322,7 @@ public class BaseTest {
             assertTrue(currentUrl.contains(websiteURL), "User was not redirected to the expected page.");
         } catch (NoSuchElementException e) {
             throw new AssertionError("Current URL does not contain the expected website URL: " + websiteURL, e);
-        } catch (org.openqa.selenium.TimeoutException e) {
+        } catch (TimeoutException e) {
             throw new AssertionError("Timeout occurred while waiting for the page to load: " + websiteURL, e);
         }
     }
@@ -328,5 +331,45 @@ public class BaseTest {
         WebElement element = ele.getXPATHWebElement(webElement);
         Select select = new Select(element);
         select.selectByVisibleText(visibleText);
+    }
+
+    public void uploadTestFile(String webElement) {
+        WebElement element = ele.getXPATHWebElement(webElement);
+
+        String filePath = System.getProperty("user.dir") + File.separator + "assets" + File.separator + "test-file.txt";
+        element.sendKeys(filePath);
+    }
+
+    public void acceptAlert() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        wait.until(ExpectedConditions.alertIsPresent());
+
+        driver.switchTo().alert().accept();
+    }
+
+    public void assertElementsAreVisible(String webElements) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        try {
+            // This single line waits for the element to exist in the HTML AND become visible.
+            List<WebElement> elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(webElements)));
+            
+            Assert.assertTrue(elements.size() > 0, "No elements found for the provided XPath: " + webElements);
+        } catch (TimeoutException e) {
+            Assert.fail("Element was not visible after 10 seconds. XPath: " + webElements);
+        }
+    }
+
+    public void clickViewProduct(String webElementWrapper, String webElementButton, int index) {
+        String wrapperXpath = webElementWrapper + index + "]";
+        String viewProductXpath = webElementButton.replace("INDEX", String.valueOf(index));
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(wrapperXpath)));
+        hoverOverElement(wrapperXpath);
+
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(viewProductXpath)));
+        click(viewProductXpath);
     }
 }

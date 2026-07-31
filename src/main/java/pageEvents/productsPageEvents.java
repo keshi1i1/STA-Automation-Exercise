@@ -11,9 +11,9 @@ import pageObjects.productsPageElements;
 
 public class productsPageEvents extends BaseTest {
 
-    public void verifyAllProductsHeader() {
-        logger.info("Verify 'All Products' header is visible");
-        assertElementIsDisplayed(productsPageElements.txtAllProductsHeader);
+    public void verifyProductsPage() {
+        logger.info("Verify user is navigated to ALL PRODUCTS page successfully");
+        assertPageIsDisplayed("products");
     }
 
     public void hoverAndAddProductToCart(int productIndex) {
@@ -66,13 +66,13 @@ public class productsPageEvents extends BaseTest {
     }
 
     public void searchProduct(String productName) {
-    logger.info("Search for product: " + productName);
-    sendKeys(productsPageElements.inputSearch, productName);
-    click(productsPageElements.btnSearch);
+        logger.info("Search for product: " + productName);
+        sendKeys(productsPageElements.inputSearch, productName);
+        click(productsPageElements.btnSearch);
     }
 
     public void verifySearchedProductsHeader() {
-        logger.info("Verify 'Searched Products' header is visible");
+        logger.info("Verify 'SEARCHED PRODUCTS' is visible");
         assertElementIsDisplayed(productsPageElements.txtSearchedProductsHeader);
     }
 
@@ -94,8 +94,22 @@ public class productsPageEvents extends BaseTest {
     }
 
     public void verifySearchedProductsAreDisplayed() {
-        logger.info("Verify search result products are displayed");
+        logger.info("Verify all the products related to search are visible");
         assertElementIsDisplayed("(" + productsPageElements.lstSearchedProducts + ")[1]");
     }
 
+    public void verifyProductsListIsVisible() {
+        logger.info("Verify the products list is visible");
+        assertElementsAreVisible(productsPageElements.lstProducts);
+    }
+
+    public void clickViewFirstProduct() {
+        logger.info("Click on 'View Product' of first product");
+        clickViewProduct(productsPageElements.productWrapper, productsPageElements.btnViewProduct, 1);
+    }
+
+    public void clickViewProduct(int productIndex) {
+        logger.info("Click on 'View Product' button");
+        clickViewProduct(productsPageElements.productWrapper, productsPageElements.btnViewProduct, productIndex);
+    }
 }

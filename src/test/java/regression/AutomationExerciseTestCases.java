@@ -23,6 +23,7 @@ import pageEvents.signupPageEvents;
 import pageEvents.productsPageEvents;
 import pageEvents.productDetailPageEvents;
 import pageEvents.checkoutPageEvents;
+import pageEvents.contactUsPageEvents;
 import pageEvents.paymentPageEvents;
 import pageEvents.categoryPageEvents;
 
@@ -31,7 +32,7 @@ public class AutomationExerciseTestCases extends BaseTest {
     String browser;
 
     // Add another variable if you want to store another list of data (...registerDetails, anotherVariable;)
-    Dictionary<String, String> registerDetails;
+    Dictionary<String, String> registerDetails, loginDetails, contactDetails;
 
     homePageEvents homePage = new homePageEvents();
     signupLoginPageEvents signupLoginPage = new signupLoginPageEvents();
@@ -44,6 +45,7 @@ public class AutomationExerciseTestCases extends BaseTest {
     checkoutPageEvents checkoutPage = new checkoutPageEvents();
     paymentPageEvents paymentPage = new paymentPageEvents();
     categoryPageEvents categoryPage = new categoryPageEvents();
+    contactUsPageEvents contactUsPage = new contactUsPageEvents();
 
     @BeforeTest(alwaysRun = true)
     @Parameters({"browser"})
@@ -58,7 +60,7 @@ public class AutomationExerciseTestCases extends BaseTest {
     }
 
     @Test(priority = 1)
-    public void tc_01_registerNewUser() {
+    public void tc_01_registerUser() {
         registerDetails = new Hashtable<>();
         registerDetails.put("name", "AutoTest" + generate4Digit());
         registerDetails.put("email", registerDetails.get("name").toLowerCase() + "@example.com");
@@ -85,10 +87,141 @@ public class AutomationExerciseTestCases extends BaseTest {
         signupPage.registerUserInformation(registerDetails);
         accountCreatedPage.verifyAccountCreatedHeader();
         accountCreatedPage.clickContinueButton();
-        homePage.verifyLoggedInAs(registerDetails.get("name"));
+        homePage.verifyLoggedInAs(registerDetails);
         homePage.clickDeleteAccountTab();
         deleteAccountPage.verifyAccountDeletedHeader();
         deleteAccountPage.clickContinueButton();
+    }
+
+    @Test(priority = 2)
+    public void tc_02_loginUserWithCorrectEmailAndPassword() {
+        registerDetails = new Hashtable<>();
+        registerDetails.put("name", "AutoTest" + generate4Digit());
+        registerDetails.put("email", registerDetails.get("name").toLowerCase() + "@example.com");
+        registerDetails.put("password", "Password" + generate4Digit());
+        registerDetails.put("day", "6");
+        registerDetails.put("month", "January");
+        registerDetails.put("year", "2005");
+        registerDetails.put("firstName", "AutoTest");
+        registerDetails.put("lastName", registerDetails.get("name").replaceAll("[^0-9]", ""));
+        registerDetails.put("company", "Example Inc.");
+        registerDetails.put("address1", "123 Main St");
+        registerDetails.put("address2", "Apt 4B");
+        registerDetails.put("country", "United States");
+        registerDetails.put("state", "New York");
+        registerDetails.put("city", "New York");
+        registerDetails.put("zipcode", "10001");
+        registerDetails.put("mobileNumber", "+1 (555) 019-9941");
+
+        logger.info("Register new user for Login test case");
+        homePage.clickSignupLoginTab();
+        signupLoginPage.verifyNewUserSignupHeader();
+        signupLoginPage.registerNewUser(registerDetails);
+        signupPage.verifyEnterAccountInformationHeader();
+        signupPage.registerUserInformation(registerDetails);
+        accountCreatedPage.verifyAccountCreatedHeader();
+        accountCreatedPage.clickContinueButton();
+        homePage.clickLogoutTab();
+
+        logger.info("Login with the registered user");
+        homePage.verifyHomePage();
+        homePage.clickSignupLoginTab();
+        signupLoginPage.verifyLoginToYourAccountHeader();
+        signupLoginPage.loginUser(registerDetails);
+        homePage.verifyLoggedInAs(registerDetails);
+        homePage.clickDeleteAccountTab();
+        deleteAccountPage.verifyAccountDeletedHeader();
+    }
+
+    @Test(priority = 3)
+    public void tc_03_loginUserWithIncorrectEmailAndPassword() {
+        homePage.verifyHomePage();
+        homePage.clickSignupLoginTab();
+        signupLoginPage.verifyLoginToYourAccountHeader();
+        signupLoginPage.loginUserWithInvalidCredentials();
+    }
+
+    @Test(priority = 4)
+    public void tc_04_logoutUser() {
+        // This is a setup account for login that doesn't require logout
+        loginDetails = new Hashtable<>();
+        loginDetails.put("name", "AutoTestLogin");
+        loginDetails.put("email", "autotest@example.com");
+        loginDetails.put("password", "Password1234");
+
+        homePage.verifyHomePage();
+        homePage.clickSignupLoginTab();
+        signupLoginPage.verifyLoginToYourAccountHeader();
+        signupLoginPage.loginUser(loginDetails);
+        homePage.verifyLoggedInAs(loginDetails);
+        homePage.clickLogoutTab();
+    }
+
+    @Test(priority = 5)
+    public void tc_05_registerUserWithExistingEmail() {
+        // This is a setup account for testing an existing email
+        loginDetails = new Hashtable<>();
+        loginDetails.put("name", "AutoTestLogin");
+        loginDetails.put("email", "autotest@example.com");
+        loginDetails.put("password", "Password1234");
+
+        homePage.verifyHomePage();
+        homePage.clickSignupLoginTab();
+        signupLoginPage.verifyNewUserSignupHeader();
+        signupLoginPage.registerNewUser(loginDetails);
+        signupLoginPage.verifyEmailAlreadyExistsError();
+    }
+
+    @Test(priority = 6)
+    public void tc_06_contactUsForm() {
+        contactDetails = new Hashtable<>();
+        contactDetails.put("contactName", "AutoTest" + generate4Digit());
+        contactDetails.put("contactEmail", contactDetails.get("contactName").toLowerCase() + "@example.com");
+        contactDetails.put("contactSubject", "Test Subject");
+        contactDetails.put("contactMessage", "This is a test message.");
+
+        homePage.verifyHomePage();
+        homePage.clickContactUsTab();
+        contactUsPage.verifyGetInTouchHeader();
+        contactUsPage.fillContactUsForm(contactDetails);
+        contactUsPage.verifySuccessMessage();
+        contactUsPage.clickHomeTab();
+    }
+
+    @Test(priority = 7)
+    public void tc_07_verifyTestCasesPage() {
+        homePage.verifyHomePage();
+        homePage.clickTestCasesTab();
+        assertPageIsDisplayed("test_cases");
+    }
+
+    @Test(priority = 8)
+    public void tc_08_verifyAllProductsAndProductDetailPage() {
+        homePage.verifyHomePage();
+        homePage.clickProductsTab();
+        productsPage.verifyProductsPage();
+        productsPage.verifyProductsListIsVisible();
+        productsPage.clickViewFirstProduct();
+        productDetailPage.verifyProductDetailPage();
+        productDetailPage.verifyProductDetailIsVisible();
+    }
+
+    @Test(priority = 9)
+    public void tc_09_searchProduct() {
+        homePage.verifyHomePage();
+        homePage.clickProductsTab();
+        productsPage.verifyProductsPage();
+        productsPage.searchProduct("Premium Polo T-Shirts");
+        productsPage.verifySearchedProductsHeader();
+        productsPage.verifySearchedProductsAreDisplayed();
+    }
+
+    @Test(priority = 10)
+    public void tc_10_verifySubscriptionInHomePage() {
+        homePage.verifyHomePage();
+        homePage.scrollToFooter();
+        homePage.verifySubscriptionHeader();
+        homePage.subscribeWithEmail();
     }
 
     @Test(priority = 11)
@@ -105,7 +238,6 @@ public class AutomationExerciseTestCases extends BaseTest {
     public void tc_12_addProductsInCart() {
         homePage.verifyHomePage();
         homePage.clickProductsTab();
-        productsPage.verifyAllProductsHeader();
         productsPage.hoverAndAddProductToCart(1);
         productsPage.clickContinueShoppingButton();
         productsPage.hoverAndAddProductToCart(2);
@@ -168,7 +300,7 @@ public class AutomationExerciseTestCases extends BaseTest {
         accountCreatedPage.verifyAccountCreatedHeader();
         accountCreatedPage.clickContinueButton();
 
-        homePage.verifyLoggedInAs(registerDetails.get("name"));
+        homePage.verifyLoggedInAs(registerDetails);
 
         homePage.clickCartTab();
         cartPage.verifyCartPageIsDisplayed();
@@ -221,7 +353,7 @@ public class AutomationExerciseTestCases extends BaseTest {
         accountCreatedPage.verifyAccountCreatedHeader();
         accountCreatedPage.clickContinueButton();
 
-        homePage.verifyLoggedInAs(registerDetails.get("name"));
+        homePage.verifyLoggedInAs(registerDetails);
 
         homePage.clickViewProduct(1);
         productDetailPage.verifyProductDetailIsVisible();
@@ -268,7 +400,6 @@ public class AutomationExerciseTestCases extends BaseTest {
         registerDetails.put("zipcode", "10001");
         registerDetails.put("mobileNumber", "+1 (555) 019-9941");
 
-        homePage.verifyHomePage();
         homePage.clickSignupLoginTab();
         signupLoginPage.verifyNewUserSignupHeader();
         signupLoginPage.registerNewUser(registerDetails);
@@ -281,9 +412,9 @@ public class AutomationExerciseTestCases extends BaseTest {
         homePage.verifyHomePage();
 
         homePage.clickSignupLoginTab();
-        signupLoginPage.loginUser(registerDetails.get("email").toString(), registerDetails.get("password").toString());
+        signupLoginPage.loginUser(registerDetails);
 
-        homePage.verifyLoggedInAs(registerDetails.get("name"));
+        homePage.verifyLoggedInAs(registerDetails);
 
         homePage.clickViewProduct(1);
         productDetailPage.verifyProductDetailIsVisible();
@@ -350,9 +481,6 @@ public class AutomationExerciseTestCases extends BaseTest {
         homePage.clickProductsTab();
         logger.info("Clicked on 'Products' button");
 
-        productsPage.verifyAllProductsHeader();
-        logger.info("Verified navigation to All Products page");
-
         productsPage.verifyBrandsSidebarIsVisible();
         logger.info("Verified Brands are visible on left side bar");
 
@@ -375,10 +503,14 @@ public class AutomationExerciseTestCases extends BaseTest {
 
     @Test(priority = 20)
     public void tc_20_searchProductsAndVerifyCartAfterLogin() {
+        registerDetails = new Hashtable<>();
+        registerDetails.put("email", "autotext@example.com");
+        registerDetails.put("password", "Password1234");
+
         homePage.verifyHomePage();
 
         homePage.clickProductsTab();
-        productsPage.verifyAllProductsHeader();
+        productsPage.verifyProductsPage();
 
         productsPage.searchProduct("Top");
         productsPage.verifySearchedProductsHeader();
@@ -391,7 +523,7 @@ public class AutomationExerciseTestCases extends BaseTest {
         cartPage.verifyProductsInCart();
 
         homePage.clickSignupLoginTab();
-        signupLoginPage.loginUser("autotest@example.com", "Password1234");
+        signupLoginPage.loginUser(registerDetails);
 
         homePage.clickCartTab();
         cartPage.verifyCartPageIsDisplayed();
@@ -404,9 +536,9 @@ public class AutomationExerciseTestCases extends BaseTest {
         homePage.verifyHomePage();
 
         homePage.clickProductsTab();
-        productsPage.verifyAllProductsHeader();
+        productsPage.verifyProductsPage();
 
-        homePage.clickViewProduct(1);
+        productsPage.clickViewProduct(1);
         productDetailPage.verifyProductDetailIsVisible();
         productDetailPage.verifyWriteYourReviewIsVisible();
 
@@ -458,7 +590,7 @@ public class AutomationExerciseTestCases extends BaseTest {
         accountCreatedPage.verifyAccountCreatedHeader();
         accountCreatedPage.clickContinueButton();
 
-        homePage.verifyLoggedInAs(registerDetails.get("name"));
+        homePage.verifyLoggedInAs(registerDetails);
 
         homePage.clickViewProduct(1);
         productDetailPage.verifyProductDetailIsVisible();
@@ -530,7 +662,7 @@ public class AutomationExerciseTestCases extends BaseTest {
         accountCreatedPage.verifyAccountCreatedHeader();
         accountCreatedPage.clickContinueButton();
 
-        homePage.verifyLoggedInAs(registerDetails.get("name"));
+        homePage.verifyLoggedInAs(registerDetails);
 
         homePage.clickCartTab();
         cartPage.verifyCartPageIsDisplayed();

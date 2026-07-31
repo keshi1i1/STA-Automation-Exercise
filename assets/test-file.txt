@@ -1,0 +1,3 @@
+This is a text document for testing purposes.
+
+This is used in Test Case #6

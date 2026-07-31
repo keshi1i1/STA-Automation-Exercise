@@ -23,6 +23,12 @@ public interface homePageElements {
     // Logout Tab
     String tabLogout = "//a[@href='/logout']";
 
+    // Contact Us Tab
+    String tabContactUs = "//a[normalize-space()='Contact us']";
+
+    // Test Cases Tab
+    String tabTestCases = "//a[contains(text(),'Test Cases')]";
+
     // Category panel header
     String linkCategoryPanel = "//div[@class='panel-group category-products']//a[@href='#CATEGORY_PANEL']";
 
@@ -39,4 +45,10 @@ public interface homePageElements {
 
     // Hero text visible after scroll up
     String txtHeroHeader = "//div[@class='item active']//h2[contains(text(),'Full-Fledged practice website for Automation Engineers')]";
+
+    // Subscription Header, Email, Button
+    String hdrSubscription = "//h2[normalize-space()='Subscription']";
+    String hdrSuccessSubscription = "//div[@class='alert-success alert']";
+    String txtSubscribeEmail = "//input[@id='susbscribe_email']";
+    String btnRightArrow = "//i[@class='fa fa-arrow-circle-o-right']";
 }

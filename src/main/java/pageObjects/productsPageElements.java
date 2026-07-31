@@ -2,9 +2,6 @@ package pageObjects;
 
 public interface productsPageElements {
 
-    // All Products page header
-    String txtAllProductsHeader = "//h2[normalize-space()='All Products']";
-
     // Product card wrapper
     String productWrapper = "(//div[@class='product-image-wrapper'])[";
 
@@ -25,4 +22,9 @@ public interface productsPageElements {
     String txtSearchedProductsHeader = "//h2[normalize-space()='Searched Products']";
     String lstSearchedProducts = "//div[@class='features_items']//div[@class='product-image-wrapper']";
 
+    // List of Products
+    String lstProducts = "//div[@class='features_items']";
+
+    // View Product
+    String btnViewProduct = "(//div[@class='product-image-wrapper'])[INDEX]//a[contains(text(),'View Product')]";
 }

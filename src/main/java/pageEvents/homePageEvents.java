@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
+import java.util.Dictionary;
 
 import base.BaseTest;
 import pageObjects.homePageElements;
@@ -25,9 +26,9 @@ public class homePageEvents extends BaseTest {
         click(homePageElements.tabDeleteAccount);
     }
 
-    public void verifyLoggedInAs(String name) {
-        logger.info("Verify that 'Logged in as " + name + "' is visible");
-        assertElementIsDisplayed("//a[contains(., 'Logged in as')]/b[text()='" + name + "']");
+    public void verifyLoggedInAs(@SuppressWarnings("rawtypes") Dictionary registerDetails) {
+        logger.info("Verify that 'Logged in as " + registerDetails.get("name").toString() + "' is visible");
+        assertElementIsDisplayed("//a[contains(., 'Logged in as')]/b[text()='" + registerDetails.get("name").toString() + "']");
     }
 
     public void clickProductsTab() {
@@ -37,18 +38,7 @@ public class homePageEvents extends BaseTest {
 
     public void clickViewProduct(int productIndex) {
         logger.info("Click 'View Product' for product #" + productIndex + " on home page");
-
-        String wrapperXpath = homePageElements.productWrapper + productIndex + "]";
-        String viewProductXpath = homePageElements.btnViewProduct.replace("INDEX", String.valueOf(productIndex));
-
-        java.time.Duration timeout = java.time.Duration.ofSeconds(10);
-        org.openqa.selenium.support.ui.WebDriverWait wait = new org.openqa.selenium.support.ui.WebDriverWait(driver, timeout);
-
-        wait.until(org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated(org.openqa.selenium.By.xpath(wrapperXpath)));
-        hoverOverElement(wrapperXpath);
-
-        wait.until(org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable(org.openqa.selenium.By.xpath(viewProductXpath)));
-        click(viewProductXpath);
+        clickViewProduct(homePageElements.productWrapper, homePageElements.btnViewProduct, productIndex);
     }
 
     public void clickCartTab() {
@@ -109,5 +99,31 @@ public class homePageEvents extends BaseTest {
     public void verifyPageScrolledUpWithHeroText() {
         logger.info("Verify page is scrolled up and hero text is visible");
         assertElementIsDisplayed(homePageElements.txtHeroHeader);
+    }
+
+    public void clickContactUsTab() {
+        logger.info("Click on 'Contact Us' button");
+        click(homePageElements.tabContactUs);
+    }
+
+    public void clickTestCasesTab() {
+        logger.info("Click on 'Test Cases' button");
+        click(homePageElements.tabTestCases);
+    }
+
+    public void verifySubscriptionHeader() {
+        logger.info("Verify text 'SUBSCRIPTION'");
+        assertElementIsDisplayed(homePageElements.hdrSubscription);
+    }
+
+    public void subscribeWithEmail() {
+        logger.info("Enter email address in input and click arrow button");
+        clear(homePageElements.txtSubscribeEmail);
+        sendKeys(homePageElements.txtSubscribeEmail, "autotest@example.com");
+        
+        click(homePageElements.btnRightArrow);
+
+        logger.info("Verify success message 'You have been successfully subscribed!' is visible");
+        assertElementIsDisplayed(homePageElements.hdrSuccessSubscription);
     }
 }

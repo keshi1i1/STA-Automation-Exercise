@@ -22,6 +22,7 @@ public class cartPageEvents extends BaseTest {
 
     public void enterSubscriptionEmail(String email) {
         logger.info("Enter email address '" + email + "' in input and click arrow button");
+        clear(cartPageElements.inputSubscribeEmail);
         sendKeys(cartPageElements.inputSubscribeEmail, email);
     }
 

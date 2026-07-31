@@ -22,4 +22,11 @@ public interface productDetailPageElements {
     String btnSubmitReview = "//button[@id='button-review']";
     String txtReviewSuccessMessage = "//div[@class='alert-success alert']//span[contains(text(),'Thank you for your review.')]";
 
+    // Product Details
+    String hdrProductName = "//h2[normalize-space()='Blue Top']";
+    String hdrCategory = "//p[normalize-space()='Category: Women > Tops']";
+    String hdrPrice = "//span[normalize-space()='Rs. 500']";
+    String hdrAvailability = "//p[normalize-space()='Availability: In Stock']";
+    String hdrCondition = "//p[normalize-space()='Condition: New']";
+    String hdrBrand = "//b[normalize-space()='Brand:']";
 }

@@ -11,4 +11,16 @@ public class categoryPageEvents extends BaseTest {
                 + upperTitle + "')]";
         assertElementIsDisplayed(xpath);
     }
+
+    public void verifyBrandPageTitle(String brandName) {
+        String upperBrand = ("Brand - " + brandName + " Products").toUpperCase();
+        String xpath = "//h2[contains(translate(., 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'), '"
+                + upperBrand + "')]";
+        assertElementIsDisplayed(xpath);
+    }
+
+    public void verifyProductsAreDisplayed() {
+        assertElementIsDisplayed("//div[@class='features_items']//div[@class='product-image-wrapper']");
+    }
+
 }

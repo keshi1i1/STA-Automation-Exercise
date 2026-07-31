@@ -98,4 +98,9 @@ public class cartPageEvents extends BaseTest {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(rowXpath)));
     }
+
+    public void verifyProductsInCart() {
+        logger.info("Verify products are visible in cart");
+        assertElementIsDisplayed(cartPageElements.cartRow + "1]");
+    }
 }

@@ -14,4 +14,15 @@ public interface productsPageElements {
     // Modal shown (Add to cart)
     String btnContinueShopping = "//button[normalize-space()='Continue Shopping']";
     String btnViewCart = "//u[normalize-space()='View Cart']";
+
+    // Brands sidebar
+    String brandsSidebarHeader = "//div[@class='brands_products']//h2[normalize-space()='Brands']";
+    String lstBrandLinks = "//div[@class='brands_products']//ul/li/a";
+
+    // Search
+    String inputSearch = "//input[@id='search_product']";
+    String btnSearch = "//button[@id='submit_search']";
+    String txtSearchedProductsHeader = "//h2[normalize-space()='Searched Products']";
+    String lstSearchedProducts = "//div[@class='features_items']//div[@class='product-image-wrapper']";
+
 }

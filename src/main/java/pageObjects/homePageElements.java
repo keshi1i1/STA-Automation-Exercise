@@ -28,4 +28,15 @@ public interface homePageElements {
 
     // Sub-category link (expanded category panel)
     String linkSubCategory = "//div[@id='CATEGORY_PANEL']//a[normalize-space()='SUBCATEGORY_NAME']";
+
+    // Recommended items
+    String txtRecommendedItems = "//h2[normalize-space()='recommended items']";
+    String btnAddToCartRecommended = "(//div[@class='recommended_items']//a[contains(@class,'add-to-cart')])[1]";
+    String btnViewCartRecommended = "//u[normalize-space()='View Cart']";
+
+    // Scroll up arrow button
+    String btnScrollUp = "//div[@id='scrollUp']";
+
+    // Hero text visible after scroll up
+    String txtHeroHeader = "//div[@class='item active']//h2[contains(text(),'Full-Fledged practice website for Automation Engineers')]";
 }

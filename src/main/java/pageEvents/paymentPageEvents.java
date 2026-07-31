@@ -33,4 +33,25 @@ public class paymentPageEvents extends BaseTest {
         logger.info("Verify success message 'Your order has been placed successfully!'");
         assertElementIsDisplayed(paymentPageElements.txtOrderPlacedSuccessMessage);
     }
+
+    public void clickDownloadInvoiceButton() {
+        logger.info("Click 'Download Invoice' button");
+        click(paymentPageElements.btnDownloadInvoice);
+    }
+
+    public void verifyInvoiceDownloaded() {
+        logger.info("Verify invoice is downloaded successfully");
+        java.io.File downloadDir = new java.io.File(System.getProperty("user.home") + "\\Downloads");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(d -> java.util.Arrays.stream(downloadDir.listFiles())
+                .anyMatch(f -> f.getName().startsWith("invoice") && f.getName().endsWith(".txt")));
+        boolean invoiceExists = java.util.Arrays.stream(downloadDir.listFiles())
+                .anyMatch(f -> f.getName().startsWith("invoice") && f.getName().endsWith(".txt"));
+        org.testng.Assert.assertTrue(invoiceExists, "Invoice file was not downloaded");
+    }
+
+    public void clickContinueButton() {
+        logger.info("Click 'Continue' button");
+        click(paymentPageElements.btnContinue);
+    }
 }

@@ -51,4 +51,51 @@ public class productsPageEvents extends BaseTest {
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath(productsPageElements.btnViewCart)));
         click(productsPageElements.btnViewCart);
     }
+
+    public void verifyBrandsSidebarIsVisible() {
+        assertElementIsDisplayed(productsPageElements.brandsSidebarHeader);
+    }
+
+    public void clickBrandByIndex(int index) {
+        // index is 1-based to match your existing convention (see hoverAndAddProductToCart(1))
+        click("(" + productsPageElements.lstBrandLinks + ")[" + index + "]");
+    }
+
+    public String getBrandNameByIndex(int index) {
+        return getText("(" + productsPageElements.lstBrandLinks + ")[" + index + "]").replaceAll("\\s*\\(.*\\)", "").trim();
+    }
+
+    public void searchProduct(String productName) {
+    logger.info("Search for product: " + productName);
+    sendKeys(productsPageElements.inputSearch, productName);
+    click(productsPageElements.btnSearch);
+    }
+
+    public void verifySearchedProductsHeader() {
+        logger.info("Verify 'Searched Products' header is visible");
+        assertElementIsDisplayed(productsPageElements.txtSearchedProductsHeader);
+    }
+
+    public void addAllSearchedProductsToCart() {
+        logger.info("Add all searched products to cart");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        int count = driver.findElements(By.xpath(productsPageElements.lstSearchedProducts)).size();
+        for (int i = 1; i <= count; i++) {
+            String wrapperXpath = "(" + productsPageElements.lstSearchedProducts + ")[" + i + "]";
+            String addToCartXpath = "(" + productsPageElements.lstSearchedProducts + ")[" + i + "]//a[contains(text(),'Add to cart')]";
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(wrapperXpath)));
+            hoverOverElement(wrapperXpath);
+            wait.until(ExpectedConditions.elementToBeClickable(By.xpath(addToCartXpath)));
+            click(addToCartXpath);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(productsPageElements.btnContinueShopping)));
+            click(productsPageElements.btnContinueShopping);
+            wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(productsPageElements.btnContinueShopping)));
+        }
+    }
+
+    public void verifySearchedProductsAreDisplayed() {
+        logger.info("Verify search result products are displayed");
+        assertElementIsDisplayed("(" + productsPageElements.lstSearchedProducts + ")[1]");
+    }
+
 }

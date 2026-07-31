@@ -38,4 +38,22 @@ public class productDetailPageEvents extends BaseTest {
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath(productDetailPageElements.btnViewCart)));
         click(productDetailPageElements.btnViewCart);
     }
+
+    public void verifyWriteYourReviewIsVisible() {
+        logger.info("Verify 'Write Your Review' is visible");
+        assertElementIsDisplayed(productDetailPageElements.txtWriteYourReview);
+    }
+
+    public void submitReview(String name, String email, String review) {
+        logger.info("Enter review details and submit");
+        sendKeys(productDetailPageElements.inputReviewName, name);
+        sendKeys(productDetailPageElements.inputReviewEmail, email);
+        sendKeys(productDetailPageElements.inputReviewText, review);
+        click(productDetailPageElements.btnSubmitReview);
+    }
+
+    public void verifyReviewSuccessMessage() {
+        logger.info("Verify review success message is visible");
+        assertElementIsDisplayed(productDetailPageElements.txtReviewSuccessMessage);
+    }
 }

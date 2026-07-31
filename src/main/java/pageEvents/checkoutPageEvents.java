@@ -24,4 +24,18 @@ public class checkoutPageEvents extends BaseTest {
         logger.info("Click 'Place Order' button");
         click(checkoutPageElements.btnPlaceOrder);
     }
+
+    public void verifyDeliveryAddress(String firstName, String lastName, String address1, String city, String state, String zipcode, String country) {
+        logger.info("Verify delivery address matches registration details");
+        assertElementIsDisplayed("//ul[@id='address_delivery']//li[contains(text(),'" + address1 + "')]");
+        assertElementIsDisplayed("//ul[@id='address_delivery']//li[contains(text(),'" + city + "')]");
+        assertElementIsDisplayed("//ul[@id='address_delivery']//li[contains(text(),'" + country + "')]");
+    }
+
+    public void verifyBillingAddress(String firstName, String lastName, String address1, String city, String state, String zipcode, String country) {
+        logger.info("Verify billing address matches registration details");
+        assertElementIsDisplayed("//ul[@id='address_invoice']//li[contains(text(),'" + address1 + "')]");
+        assertElementIsDisplayed("//ul[@id='address_invoice']//li[contains(text(),'" + city + "')]");
+        assertElementIsDisplayed("//ul[@id='address_invoice']//li[contains(text(),'" + country + "')]");
+    }
 }

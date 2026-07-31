@@ -14,4 +14,10 @@ public interface paymentPageElements {
 
     // Order placed success message
     String txtOrderPlacedSuccessMessage = "//p[contains(text(),'Congratulations! Your order has been confirmed!')]";
+
+    // Download Invoice button
+    String btnDownloadInvoice = "//a[contains(text(),'Download Invoice')]";
+
+    // Continue button after order
+    String btnContinue = "//a[normalize-space()='Continue']";
 }

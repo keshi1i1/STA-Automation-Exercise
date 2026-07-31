@@ -82,4 +82,32 @@ public class homePageEvents extends BaseTest {
         logger.info("Verify that categories are visible on left side bar");
         assertElementIsDisplayed("//div[@class='panel-group category-products']");
     }
+
+    public void verifyRecommendedItemsVisible() {
+        logger.info("Verify 'RECOMMENDED ITEMS' are visible");
+        assertElementIsDisplayed(homePageElements.txtRecommendedItems);
+    }
+
+    public void addRecommendedProductToCart() {
+        logger.info("Click 'Add To Cart' on recommended product");
+        click(homePageElements.btnAddToCartRecommended);
+    }
+
+    public void clickViewCartFromRecommended() {
+        logger.info("Click 'View Cart' from recommended items modal");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(homePageElements.btnViewCartRecommended)));
+        click(homePageElements.btnViewCartRecommended);
+    }
+
+    public void clickScrollUpArrow() {
+        logger.info("Click scroll up arrow button");
+        ((org.openqa.selenium.JavascriptExecutor) driver).executeScript(
+            "document.getElementById('scrollUp').click();");
+    }
+
+    public void verifyPageScrolledUpWithHeroText() {
+        logger.info("Verify page is scrolled up and hero text is visible");
+        assertElementIsDisplayed(homePageElements.txtHeroHeader);
+    }
 }
